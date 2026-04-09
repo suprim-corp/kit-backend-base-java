@@ -1,6 +1,7 @@
 # Kit Java Backend Library
 
 [![CI](https://github.com/suprim-corp/kit-backend-base-java/actions/workflows/ci.yml/badge.svg)](https://github.com/suprim-corp/kit-backend-base-java/actions/workflows/ci.yml)
+[![](https://jitpack.io/v/suprim-corp/kit-backend-base-java.svg)](https://jitpack.io/#suprim-corp/kit-backend-base-java)
 [![codecov](https://codecov.io/gh/suprim-corp/kit-backend-base-java/branch/main/graph/badge.svg)](https://codecov.io/gh/suprim-corp/kit-backend-base-java)
 ![Java](https://img.shields.io/badge/Java-17+-orange?logo=openjdk)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-blue?logo=apachemaven)
