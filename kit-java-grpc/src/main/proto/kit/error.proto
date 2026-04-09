@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package dev.suprim.kit.grpc;
+
+option java_package = "dev.suprim.kit.grpc.proto";
+option java_outer_classname = "ErrorProto";
+option java_multiple_files = true;
+
+import "google/protobuf/any.proto";
+
+// Common error detail message for gRPC responses.
+message ErrorDetail {
+  // Application-specific error code.
+  int32 code = 1;
+
+  // Human-readable error message.
+  string message = 2;
+
+  // Optional additional error data.
+  google.protobuf.Any data = 3;
+}
+
+// Validation error for a specific field.
+message FieldError {
+  // Field name that has the error.
+  string field = 1;
+
+  // Error message for the field.
+  string message = 2;
+
+  // Optional rejected value.
+  string rejected_value = 3;
+}
+
+// Collection of validation errors.
+message ValidationErrors {
+  // List of field-level errors.
+  repeated FieldError errors = 1;
+}
