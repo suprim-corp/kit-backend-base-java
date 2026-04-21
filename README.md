@@ -40,42 +40,42 @@ Then add the modules you need:
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-core</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- JSON utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-json</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- Exception framework -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-exception</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- Crypto utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-crypto</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- Web utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-web</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- gRPC utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-grpc</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -88,11 +88,9 @@ import dev.suprim.kit.core.UUIDUtils;
 
 // Random UUID v4
 UUID id = UUIDUtils.v4();
-String idStr = UUIDUtils.v4String();
 
 // Time-ordered UUID v7 (better for database indexes)
 UUID timeId = UUIDUtils.v7();
-String timeIdStr = UUIDUtils.v7String();
 ```
 
 ### JSON Utilities

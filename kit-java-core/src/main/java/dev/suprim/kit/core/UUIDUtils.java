@@ -37,26 +37,4 @@ public final class UUIDUtils {
     public static UUID v7() {
         return UUID_V7_GENERATOR.generate();
     }
-
-    /**
-     * Generates a random UUID v4 as string.
-     *
-     * @return UUID v4 string
-     * @deprecated use {@link #v4()} and call {@link UUID#toString()} instead.
-     */
-    @Deprecated
-    public static String v4String() {
-        return v4().toString();
-    }
-
-    /**
-     * Generates a time-ordered UUID v7 as string.
-     *
-     * @return UUID v7 string
-     * @deprecated use {@link #v7()} and call {@link UUID#toString()} instead.
-     */
-    @Deprecated
-    public static String v7String() {
-        return v7().toString();
-    }
 }

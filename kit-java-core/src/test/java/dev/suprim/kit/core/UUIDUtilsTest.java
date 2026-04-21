@@ -41,20 +41,6 @@ class UUIDUtilsTest {
         assertTrue(first.compareTo(second) <= 0, "UUID v7 should be time-ordered");
     }
 
-    @Test
-    void v4String_shouldReturnValidUUIDString() {
-        String uuid = UUIDUtils.v4String();
-        assertNotNull(uuid);
-        assertDoesNotThrow(() -> UUID.fromString(uuid));
-    }
-
-    @Test
-    void v7String_shouldReturnValidUUIDString() {
-        String uuid = UUIDUtils.v7String();
-        assertNotNull(uuid);
-        assertDoesNotThrow(() -> UUID.fromString(uuid));
-    }
-
     // Private constructor test
     @Test
     void privateConstructor_shouldThrowException() throws Exception {
