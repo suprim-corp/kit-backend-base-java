@@ -42,7 +42,9 @@ public final class UUIDUtils {
      * Generates a random UUID v4 as string.
      *
      * @return UUID v4 string
+     * @deprecated use {@link #v4()} and call {@link UUID#toString()} instead.
      */
+    @Deprecated
     public static String v4String() {
         return v4().toString();
     }
@@ -51,7 +53,9 @@ public final class UUIDUtils {
      * Generates a time-ordered UUID v7 as string.
      *
      * @return UUID v7 string
+     * @deprecated use {@link #v7()} and call {@link UUID#toString()} instead.
      */
+    @Deprecated
     public static String v7String() {
         return v7().toString();
     }
