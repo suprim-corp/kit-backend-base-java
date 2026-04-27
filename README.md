@@ -40,42 +40,42 @@ Then add the modules you need:
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- JSON utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-json</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- Exception framework -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-exception</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- Crypto utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-crypto</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- Web utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-web</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- gRPC utilities -->
 <dependency>
     <groupId>com.github.suprim-corp.kit-backend-base-java</groupId>
     <artifactId>kit-java-grpc</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
@@ -200,7 +200,8 @@ String contentType = HttpConstants.CONTENT_TYPE_JSON;
 String authHeader = HttpConstants.HEADER_AUTHORIZATION;
 
 // API responses
-BaseResponse<User> response = new BaseResponse<>(user);
+BaseResponse<Void> ok = BaseResponse.success();
+BaseResponse<User> response = BaseResponse.success(user);
 BaseResponse<Void> error = new BaseResponse<>(ApiStatus.NOT_FOUND, "User not found");
 
 // Paginated responses

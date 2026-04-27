@@ -38,4 +38,12 @@ public record BaseResponse<T>(
 	public BaseResponse(ApiStatus code, String message, T data) {
 		this(code.getCode(), message, data);
 	}
+
+	public static <T> BaseResponse<T> success() {
+		return new BaseResponse<>(ApiStatus.SUCCESS.getCode(), ApiStatus.SUCCESS.getMessage(), null);
+	}
+
+	public static <T> BaseResponse<T> success(T data) {
+		return new BaseResponse<>(ApiStatus.SUCCESS.getCode(), ApiStatus.SUCCESS.getMessage(), data);
+	}
 }

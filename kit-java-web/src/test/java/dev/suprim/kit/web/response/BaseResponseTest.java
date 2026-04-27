@@ -77,6 +77,33 @@ class BaseResponseTest {
     }
 
     @Test
+    void success_returnsSuccessWithNullData() {
+        BaseResponse<Void> response = BaseResponse.success();
+
+        assertEquals(ApiStatus.SUCCESS.getCode(), response.code());
+        assertEquals(ApiStatus.SUCCESS.getMessage(), response.message());
+        assertNull(response.data());
+    }
+
+    @Test
+    void successWithData_returnsSuccessWithData() {
+        BaseResponse<String> response = BaseResponse.success("hello");
+
+        assertEquals(ApiStatus.SUCCESS.getCode(), response.code());
+        assertEquals(ApiStatus.SUCCESS.getMessage(), response.message());
+        assertEquals("hello", response.data());
+    }
+
+    @Test
+    void successWithNullData_noAmbiguity() {
+        BaseResponse<String> response = BaseResponse.success(null);
+
+        assertEquals(ApiStatus.SUCCESS.getCode(), response.code());
+        assertEquals(ApiStatus.SUCCESS.getMessage(), response.message());
+        assertNull(response.data());
+    }
+
+    @Test
     void canonicalConstructor_setsAllFieldsDirectly() {
         BaseResponse<Integer> response = new BaseResponse<>(200, "OK", 42);
 
