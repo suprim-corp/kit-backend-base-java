@@ -3,6 +3,8 @@ package dev.suprim.kit.web.context;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -116,5 +118,14 @@ class RequestContextTest {
 
         assertTrue(RequestContext.get("other").isEmpty());
         assertEquals("mainValue", RequestContext.get("main").orElseThrow());
+    }
+
+    @Test
+    void constructor_shouldThrowUnsupportedOperationException() throws Exception {
+        Constructor<RequestContext> constructor = RequestContext.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, constructor::newInstance);
+        assertInstanceOf(UnsupportedOperationException.class, exception.getCause());
     }
 }

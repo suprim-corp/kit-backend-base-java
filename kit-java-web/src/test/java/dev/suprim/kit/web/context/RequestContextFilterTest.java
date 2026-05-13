@@ -3,6 +3,8 @@ package dev.suprim.kit.web.context;
 import dev.suprim.kit.web.HttpConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -135,6 +137,29 @@ class RequestContextFilterTest {
 
         assertThrows(ServletException.class, () -> filter.doFilter(request, response, chain));
 
+        assertTrue(RequestContext.getTraceId().isEmpty());
+        assertNull(MDC.get(RequestContextFilter.MDC_TRACE_ID));
+    }
+
+    @Test
+    void shouldPassThroughNonHttpRequest() throws IOException, ServletException {
+        ServletRequest nonHttpRequest = mock(ServletRequest.class);
+        ServletResponse nonHttpResponse = mock(ServletResponse.class);
+
+        filter.doFilter(nonHttpRequest, nonHttpResponse, chain);
+
+        verify(chain).doFilter(nonHttpRequest, nonHttpResponse);
+        assertTrue(RequestContext.getTraceId().isEmpty());
+        assertNull(MDC.get(RequestContextFilter.MDC_TRACE_ID));
+    }
+
+    @Test
+    void shouldPassThroughWhenResponseNotHttp() throws IOException, ServletException {
+        ServletResponse nonHttpResponse = mock(ServletResponse.class);
+
+        filter.doFilter(request, nonHttpResponse, chain);
+
+        verify(chain).doFilter(request, nonHttpResponse);
         assertTrue(RequestContext.getTraceId().isEmpty());
         assertNull(MDC.get(RequestContextFilter.MDC_TRACE_ID));
     }

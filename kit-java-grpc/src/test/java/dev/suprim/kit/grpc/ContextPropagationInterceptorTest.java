@@ -108,4 +108,44 @@ class ContextPropagationInterceptorTest {
     void shouldRejectNullHeaders() {
         assertThrows(NullPointerException.class, () -> interceptor.interceptCall(call, null, next));
     }
+
+    @Test
+    void shouldCleanMdcOnComplete() {
+        Metadata headers = new Metadata();
+        headers.put(MetadataUtils.TRACE_ID, "trace-complete");
+        headers.put(MetadataUtils.REQUEST_ID, "req-complete");
+
+        ServerCall.Listener<Object> wrappedListener = interceptor.interceptCall(call, headers, next);
+
+        // MDC should be set after interceptCall
+        assertEquals("trace-complete", MDC.get(ContextPropagationInterceptor.MDC_TRACE_ID));
+        assertEquals("req-complete", MDC.get(ContextPropagationInterceptor.MDC_REQUEST_ID));
+
+        // Simulate call completion
+        wrappedListener.onComplete();
+
+        // MDC should be cleaned
+        assertNull(MDC.get(ContextPropagationInterceptor.MDC_TRACE_ID));
+        assertNull(MDC.get(ContextPropagationInterceptor.MDC_REQUEST_ID));
+    }
+
+    @Test
+    void shouldCleanMdcOnCancel() {
+        Metadata headers = new Metadata();
+        headers.put(MetadataUtils.TRACE_ID, "trace-cancel");
+        headers.put(MetadataUtils.REQUEST_ID, "req-cancel");
+
+        ServerCall.Listener<Object> wrappedListener = interceptor.interceptCall(call, headers, next);
+
+        // MDC should be set after interceptCall
+        assertEquals("trace-cancel", MDC.get(ContextPropagationInterceptor.MDC_TRACE_ID));
+        assertEquals("req-cancel", MDC.get(ContextPropagationInterceptor.MDC_REQUEST_ID));
+
+        // Simulate call cancellation
+        wrappedListener.onCancel();
+
+        // MDC should be cleaned
+        assertNull(MDC.get(ContextPropagationInterceptor.MDC_TRACE_ID));
+        assertNull(MDC.get(ContextPropagationInterceptor.MDC_REQUEST_ID));
+    }
 }

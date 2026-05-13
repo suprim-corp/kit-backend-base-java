@@ -45,8 +45,12 @@ public class RequestContextFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        if (!(request instanceof HttpServletRequest httpRequest)
-                || !(response instanceof HttpServletResponse httpResponse)) {
+        if (!(request instanceof HttpServletRequest httpRequest)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (!(response instanceof HttpServletResponse httpResponse)) {
             chain.doFilter(request, response);
             return;
         }

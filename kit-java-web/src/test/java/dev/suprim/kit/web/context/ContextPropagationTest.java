@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -118,5 +120,14 @@ class ContextPropagationTest {
         executor.shutdown();
 
         assertEquals("trace-no-mdc", capturedTraceId.get());
+    }
+
+    @Test
+    void constructor_shouldThrowUnsupportedOperationException() throws Exception {
+        Constructor<ContextPropagation> constructor = ContextPropagation.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        InvocationTargetException exception = assertThrows(InvocationTargetException.class, constructor::newInstance);
+        assertInstanceOf(UnsupportedOperationException.class, exception.getCause());
     }
 }
