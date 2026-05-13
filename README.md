@@ -17,8 +17,8 @@ Reusable backend utilities for Java applications.
 | `kit-java-json`      | Jackson-based JSON utilities                       | kit-java-core, jackson            |
 | `kit-java-exception` | Exception framework with error codes               | kit-java-core                     |
 | `kit-java-crypto`    | AES-256-GCM encryption, HKDF key derivation        | (none)                          |
-| `kit-java-web`       | HTTP utilities, responses, domain extraction       | kit-java-core, kit-java-exception   |
-| `kit-java-grpc`      | gRPC utilities, exception mapping, proto defs      | kit-java-exception, grpc, protobuf|
+| `kit-java-web`       | HTTP utilities, responses, trace propagation       | kit-java-core, kit-java-exception   |
+| `kit-java-grpc`      | gRPC utilities, exception mapping, trace propagation | kit-java-exception, grpc, protobuf|
 
 ## Installation
 
@@ -40,42 +40,42 @@ Then add the modules you need:
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-core</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- JSON utilities -->
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-json</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- Exception framework -->
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-exception</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- Crypto utilities -->
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-crypto</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- Web utilities -->
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-web</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!-- gRPC utilities -->
 <dependency>
     <groupId>dev.suprim</groupId>
     <artifactId>kit-java-grpc</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -211,6 +211,63 @@ PaginatedResponse<Item> paginated = new PaginatedResponse<>(items, totalCount, p
 ValidationError error = new ValidationError("email", "Invalid format");
 ```
 
+### Trace Propagation (HTTP)
+
+```java
+import dev.suprim.kit.web.context.*;
+
+// Register the filter (Spring Boot)
+@Bean
+FilterRegistrationBean<RequestContextFilter> requestContextFilter() {
+    FilterRegistrationBean<RequestContextFilter> registration = new FilterRegistrationBean<>(new RequestContextFilter());
+    registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return registration;
+}
+
+// Access trace/request ID anywhere in the request thread
+Optional<String> traceId = RequestContext.getTraceId();
+Optional<String> requestId = RequestContext.getRequestId();
+
+// Propagate context to async tasks
+ExecutorService executor = Executors.newFixedThreadPool(4);
+executor.submit(ContextPropagation.wrap(() -> {
+    // RequestContext and MDC are available here
+    String trace = RequestContext.getTraceId().orElse("unknown");
+}));
+```
+
+The filter automatically:
+- Extracts `X-Trace-ID` and `X-Request-ID` from incoming headers (or generates UUID v7 if absent)
+- Stores them in `RequestContext` (ThreadLocal) and SLF4J MDC (`traceId`, `requestId`)
+- Sets `X-Trace-ID` and `X-Request-ID` response headers
+- Cleans up after request completes
+
+### Trace Propagation (gRPC)
+
+```java
+import dev.suprim.kit.grpc.*;
+
+// Server-side: extract trace context from incoming metadata
+Server server = ServerBuilder.forPort(9090)
+    .addService(new MyServiceImpl())
+    .intercept(new ContextPropagationInterceptor())
+    .intercept(new ExceptionInterceptor())
+    .build();
+
+// Client-side: forward trace context to outgoing calls
+ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:9090")
+    .intercept(new ContextForwardingInterceptor())
+    .build();
+
+// Access context in service implementation
+String traceId = GrpcContext.getTraceId();
+String requestId = GrpcContext.getRequestId();
+```
+
+`ContextPropagationInterceptor` extracts `x-trace-id`, `x-request-id`, `x-user-id`, `x-tenant-id` from gRPC metadata, attaches to gRPC Context, and sets SLF4J MDC for log correlation.
+
+`ContextForwardingInterceptor` forwards these values from the current gRPC Context to outgoing call metadata for service-to-service propagation.
+
 ### gRPC Utilities
 
 ```java
@@ -231,10 +288,6 @@ Server server = ServerBuilder.forPort(9090)
     .addService(new MyServiceImpl())
     .intercept(new ExceptionInterceptor())
     .build();
-
-// Access context in service implementation
-String requestId = GrpcContext.getRequestId();
-String userId = GrpcContext.getUserId();
 
 // Work with metadata
 Metadata metadata = MetadataUtils.withRequestId("req-123");
