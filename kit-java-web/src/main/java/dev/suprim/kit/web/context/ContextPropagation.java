@@ -4,6 +4,7 @@ import org.slf4j.MDC;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -71,10 +72,7 @@ public final class ContextPropagation {
     }
 
     private static void setMdcContext(Map<String, String> mdcSnapshot) {
-        if (mdcSnapshot != null) {
-            MDC.setContextMap(mdcSnapshot);
-        } else {
-            MDC.clear();
-        }
+        Optional.ofNullable(mdcSnapshot)
+                .ifPresentOrElse(MDC::setContextMap, MDC::clear);
     }
 }
